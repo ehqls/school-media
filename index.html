@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>학교 익명 게시판</title>
+  <title>SCHOOL MEDIA | 익명 게시판</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="script.js" defer></script>
@@ -21,9 +21,7 @@
   <nav class="nav">
     <a href="#write">글 작성</a>
     <a href="#board">공개 게시판</a>
-    <button id="adminToggle" class="admin-button" type="button">
-      관리자 로그인
-    </button>
+    <a href="admin.html">관리자 페이지</a>
   </nav>
 
   <main>
@@ -36,12 +34,22 @@
 
       <form id="postForm">
         <label for="postTitle">제목</label>
-        <input id="postTitle" type="text" maxlength="60"
-          placeholder="제목을 입력하세요." required>
+        <input
+          id="postTitle"
+          type="text"
+          maxlength="60"
+          placeholder="제목을 입력하세요."
+          required
+        >
 
         <label for="postContent">내용</label>
-        <textarea id="postContent" rows="6" maxlength="2000"
-          placeholder="내용을 입력하세요." required></textarea>
+        <textarea
+          id="postContent"
+          rows="6"
+          maxlength="2000"
+          placeholder="내용을 입력하세요."
+          required
+        ></textarea>
 
         <button class="primary-button" type="submit">
           검토 요청하기
@@ -49,49 +57,6 @@
       </form>
 
       <p id="formMessage" class="message" aria-live="polite"></p>
-    </section>
-
-    <section id="adminLoginPanel" class="panel hidden">
-      <h2>관리자 로그인</h2>
-      <p class="description">
-        Supabase에 등록된 관리자 계정으로 로그인하세요.
-      </p>
-
-      <form id="adminLoginForm">
-        <label for="adminEmail">관리자 이메일</label>
-        <input id="adminEmail" type="email" autocomplete="username"
-          placeholder="관리자 이메일" required>
-
-        <label for="adminPassword">비밀번호</label>
-        <input id="adminPassword" type="password"
-          autocomplete="current-password"
-          placeholder="비밀번호" required>
-
-        <button class="primary-button" type="submit">로그인</button>
-        <button id="cancelAdminLogin" class="secondary-button" type="button">
-          취소
-        </button>
-      </form>
-
-      <p id="adminLoginMessage" class="message" aria-live="polite"></p>
-    </section>
-
-    <section id="adminPanel" class="panel hidden">
-      <h2>관리자 페이지</h2>
-      <p class="description">
-        제출된 글을 확인하고 승인하거나 반려하세요.
-      </p>
-
-      <div class="admin-stats">
-        <span>검토 대기: <strong id="pendingCount">0</strong></span>
-        <span>공개 게시글: <strong id="approvedCount">0</strong></span>
-      </div>
-
-      <div id="pendingPosts" class="post-list"></div>
-
-      <button id="adminLogout" class="secondary-button" type="button">
-        관리자 로그아웃
-      </button>
     </section>
 
     <section id="board" class="panel">
