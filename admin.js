@@ -4,7 +4,14 @@ const SUPABASE_KEY = "sb_publishable_WXwSFMksPBri_DwvjSLbbw_OZFNDh0B";
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_KEY
+  SUPABASE_KEY,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false
+    }
+  }
 );
 
 const loginPanel = document.getElementById("adminLoginPanel");
@@ -22,13 +29,16 @@ let isAdmin = false;
 
 function makeElement(tag, className, text) {
   const el = document.createElement(tag);
+
   if (className) el.className = className;
   if (text !== undefined) el.textContent = text;
+
   return el;
 }
 
 function formatDate(value) {
   const date = new Date(value);
+
   return Number.isNaN(date.getTime())
     ? ""
     : date.toLocaleString("ko-KR");
@@ -40,52 +50,98 @@ function showEmpty(container, message) {
   );
 }
 
+function showLogin(message = "") {
+  isAdmin = false;
+
+  adminPanel.classList.add("hidden");
+  loginPanel.classList.remove("hidden");
+  loginMessage.textContent = message;
+}
+
+function showAdmin() {
+  loginPanel.classList.add("hidden");
+  adminPanel.classList.remove("hidden");
+  loginMessage.textContent = "";
+}
+
 async function checkAdmin() {
-  const { data: sessionData, error: sessionError } =
-    await db.auth.getSession();
-
-  if (sessionError || !sessionData.session) return false;
-
   const { data, error } = await db.rpc("is_board_admin");
 
-  return !error && data === true;
+  if (error) {
+    console.error("관리자 권한 확인 실패:", error);
+    return false;
+  }
+
+  return data === true;
 }
 
 function makePostCard(post, section) {
   const card = makeElement("article", "post-card");
 
-  card.appendChild(makeElement("h3", "", post.title));
-  card.appendChild(makeElement("p", "post-content", post.content));
+  card.appendChild(makeElement("h3", "", post.title || "(제목 없음)"));
   card.appendChild(
-    makeElement("p", "post-meta", `익명 · ${formatDate(post.created_at)}`)
+    makeElement("p", "post-content", post.content || "")
+  );
+  card.appendChild(
+    makeElement(
+      "p",
+      "post-meta",
+      `익명 · ${formatDate(post.created_at)}`
+    )
   );
 
   const actions = makeElement("div", "post-actions");
 
   if (section === "pending") {
-    const approve = makeElement("button", "approve-button", "승인하고 공개");
+    const approve = makeElement(
+      "button",
+      "approve-button",
+      "승인하고 공개"
+    );
+
     approve.type = "button";
     approve.addEventListener("click", () => updateStatus(post.id));
 
-    const reject = makeElement("button", "reject-button", "반려하고 삭제");
+    const reject = makeElement(
+      "button",
+      "reject-button",
+      "반려하고 삭제"
+    );
+
     reject.type = "button";
-    reject.addEventListener("click", () => deletePost(post.id, "pending"));
+    reject.addEventListener("click", () =>
+      deletePost(post.id, "pending")
+    );
 
     actions.append(approve, reject);
   } else {
-    const remove = makeElement("button", "reject-button", "공개 글 삭제");
+    const remove = makeElement(
+      "button",
+      "reject-button",
+      "공개 글 삭제"
+    );
+
     remove.type = "button";
-    remove.addEventListener("click", () => deletePost(post.id, "approved"));
+    remove.addEventListener("click", () =>
+      deletePost(post.id, "approved")
+    );
 
     actions.appendChild(remove);
   }
 
   card.appendChild(actions);
+
   return card;
 }
 
 async function loadPosts() {
   if (!isAdmin) return;
+
+  pendingPosts.replaceChildren();
+  approvedPosts.replaceChildren();
+
+  showEmpty(pendingPosts, "게시글을 불러오는 중입니다.");
+  showEmpty(approvedPosts, "게시글을 불러오는 중입니다.");
 
   const { data, error } = await db
     .from("board_posts")
@@ -94,13 +150,32 @@ async function loadPosts() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(error);
-    alert("게시글을 불러오지 못했습니다. 권한 정책을 확인하세요.");
+    console.error("게시글 조회 오류:", error);
+
+    showEmpty(
+      pendingPosts,
+      "게시글을 불러오지 못했습니다. Supabase 권한 정책을 확인하세요."
+    );
+
+    showEmpty(
+      approvedPosts,
+      "게시글 조회에 실패했습니다."
+    );
+
+    alert(
+      `게시글 조회 실패: ${error.message}`
+    );
+
     return;
   }
 
-  const pending = data.filter(post => post.status === "pending");
-  const approved = data.filter(post => post.status === "approved");
+  const posts = data || [];
+  const pending = posts.filter(
+    post => post.status === "pending"
+  );
+  const approved = posts.filter(
+    post => post.status === "approved"
+  );
 
   pendingCount.textContent = String(pending.length);
   approvedCount.textContent = String(approved.length);
@@ -112,7 +187,9 @@ async function loadPosts() {
     showEmpty(pendingPosts, "검토할 게시글이 없습니다.");
   } else {
     pending.forEach(post => {
-      pendingPosts.appendChild(makePostCard(post, "pending"));
+      pendingPosts.appendChild(
+        makePostCard(post, "pending")
+      );
     });
   }
 
@@ -120,7 +197,9 @@ async function loadPosts() {
     showEmpty(approvedPosts, "공개된 게시글이 없습니다.");
   } else {
     approved.forEach(post => {
-      approvedPosts.appendChild(makePostCard(post, "approved"));
+      approvedPosts.appendChild(
+        makePostCard(post, "approved")
+      );
     });
   }
 }
@@ -128,15 +207,23 @@ async function loadPosts() {
 async function updateStatus(id) {
   if (!isAdmin) return;
 
-  const { error } = await db
+  const { data, error } = await db
     .from("board_posts")
     .update({ status: "approved" })
     .eq("id", id)
-    .eq("status", "pending");
+    .eq("status", "pending")
+    .select("id");
 
   if (error) {
-    console.error(error);
-    alert("승인에 실패했습니다. 관리자 권한을 확인하세요.");
+    console.error("게시글 승인 오류:", error);
+    alert(`승인에 실패했습니다: ${error.message}`);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    alert(
+      "게시글이 승인되지 않았습니다. 관리자 권한과 UPDATE 정책을 확인하세요."
+    );
     return;
   }
 
@@ -150,7 +237,11 @@ async function deletePost(id, expectedStatus) {
     ? "공개된 게시글"
     : "검토 대기 게시글";
 
-  if (!confirm(`${label}을 삭제할까요? 이 작업은 복구할 수 없습니다.`)) {
+  if (
+    !confirm(
+      `${label}을 삭제할까요? 이 작업은 복구할 수 없습니다.`
+    )
+  ) {
     return;
   }
 
@@ -162,13 +253,15 @@ async function deletePost(id, expectedStatus) {
     .select("id");
 
   if (error) {
-    console.error(error);
-    alert("삭제에 실패했습니다. 관리자 권한과 RLS 삭제 정책을 확인하세요.");
+    console.error("게시글 삭제 오류:", error);
+    alert(`삭제에 실패했습니다: ${error.message}`);
     return;
   }
 
   if (!data || data.length === 0) {
-    alert("게시글이 삭제되지 않았습니다. 권한이나 게시글 상태를 확인하세요.");
+    alert(
+      "게시글이 삭제되지 않았습니다. 관리자 권한과 DELETE 정책을 확인하세요."
+    );
     return;
   }
 
@@ -178,35 +271,55 @@ async function deletePost(id, expectedStatus) {
 loginForm.addEventListener("submit", async event => {
   event.preventDefault();
 
-  const email = document.getElementById("adminEmail").value.trim();
-  const password = document.getElementById("adminPassword").value;
-  const button = loginForm.querySelector('button[type="submit"]');
+  const email = document
+    .getElementById("adminEmail")
+    .value
+    .trim();
+
+  const password = document
+    .getElementById("adminPassword")
+    .value;
+
+  const button = loginForm.querySelector(
+    'button[type="submit"]'
+  );
 
   button.disabled = true;
-  loginMessage.textContent = "로그인 중…";
+  loginMessage.textContent = "로그인 중입니다.";
 
   try {
-    const { error } = await db.auth.signInWithPassword({ email, password });
+    const { error } = await db.auth.signInWithPassword({
+      email,
+      password
+    });
 
     if (error) throw error;
 
-    isAdmin = await checkAdmin();
+    const allowed = await checkAdmin();
 
-    if (!isAdmin) {
+    if (!allowed) {
       await db.auth.signOut();
-      throw new Error("이 계정에는 관리자 권한이 없습니다.");
+
+      throw new Error(
+        "이 계정에는 관리자 권한이 없습니다."
+      );
     }
 
-    loginPanel.classList.add("hidden");
-    adminPanel.classList.remove("hidden");
-    loginMessage.textContent = "";
+    isAdmin = true;
+
     document.getElementById("adminPassword").value = "";
+
+    showAdmin();
 
     await loadPosts();
   } catch (error) {
-    console.error(error);
-    loginMessage.textContent =
-      error.message || "로그인에 실패했습니다.";
+    console.error("로그인 오류:", error);
+
+    await db.auth.signOut();
+
+    showLogin(
+      error.message || "로그인에 실패했습니다."
+    );
   } finally {
     button.disabled = false;
   }
@@ -214,30 +327,14 @@ loginForm.addEventListener("submit", async event => {
 
 logoutButton.addEventListener("click", async () => {
   await db.auth.signOut();
-  isAdmin = false;
 
-  adminPanel.classList.add("hidden");
-  loginPanel.classList.remove("hidden");
   loginForm.reset();
+  showLogin("로그아웃했습니다.");
 });
 
-async function initialize() {
-  if (
-    !window.supabase ||
-    SUPABASE_KEY.startsWith("여기에_")
-  ) {
-    loginMessage.textContent =
-      "admin.js에 Supabase 공개 키를 설정하세요.";
-    return;
-  }
-
-  isAdmin = await checkAdmin();
-
-  if (isAdmin) {
-    loginPanel.classList.add("hidden");
-    adminPanel.classList.remove("hidden");
-    await loadPosts();
-  }
+function initialize() {
+  // 페이지를 열 때마다 로그인 화면부터 표시
+  showLogin();
 }
 
 initialize();
