@@ -86,6 +86,8 @@ a {
   font-weight: 700;
 }
 
+/* 메뉴 */
+
 .nav {
   display: flex;
   align-items: center;
@@ -103,6 +105,16 @@ a {
   color: var(--primary);
 }
 
+/* 로그인 및 햄버거 버튼 */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .login-button,
 .primary-button {
   display: inline-flex;
@@ -117,13 +129,27 @@ a {
   white-space: nowrap;
 }
 
+.login-button {
+  flex-shrink: 0;
+}
+
+.login-button:hover {
+  color: white;
+  background: var(--primary-dark);
+}
+
 .menu-toggle {
   display: none;
   border: 0;
   background: transparent;
   font-size: 25px;
   cursor: pointer;
+  color: var(--text);
+  padding: 5px;
+  line-height: 1;
 }
+
+/* 메인 화면 */
 
 .hero {
   width: min(1200px, calc(100% - 40px));
@@ -198,6 +224,8 @@ a {
   letter-spacing: -5px;
   text-shadow: 0 5px 25px rgba(45, 90, 180, 0.2);
 }
+
+/* 섹션 */
 
 .section {
   width: min(1200px, calc(100% - 40px));
@@ -285,6 +313,8 @@ a {
   font-weight: 700;
 }
 
+/* 뉴스 및 영상 */
+
 .content-card {
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -312,6 +342,8 @@ a {
   letter-spacing: 2px;
 }
 
+/* 동아리 */
+
 .feature-panel {
   min-height: 190px;
   padding: 35px;
@@ -338,9 +370,13 @@ a {
   font-weight: 900;
 }
 
+/* 설정 */
+
 .settings-section {
   margin-bottom: 80px;
 }
+
+/* 푸터 */
 
 .footer {
   padding: 45px 20px;
@@ -366,14 +402,20 @@ a {
   font-size: 11px;
 }
 
+/* 태블릿 및 모바일 */
+
 @media (max-width: 900px) {
   .header {
     flex-wrap: wrap;
   }
 
+  .header-actions {
+    order: 2;
+    margin-left: auto;
+  }
+
   .menu-toggle {
     display: block;
-    margin-left: auto;
   }
 
   .nav {
@@ -390,12 +432,10 @@ a {
   }
 
   .nav a {
+    display: block;
+    width: 100%;
     padding: 12px 5px;
     border-top: 1px solid rgba(100, 130, 180, 0.12);
-  }
-
-  .login-button {
-    display: none;
   }
 
   .three-columns {
@@ -403,11 +443,47 @@ a {
   }
 }
 
+/* 휴대폰 */
+
 @media (max-width: 600px) {
   .header {
     width: calc(100% - 24px);
     margin: 12px auto;
     padding: 12px 15px;
+    gap: 10px;
+  }
+
+  .logo {
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
+  .logo strong {
+    font-size: 13px;
+  }
+
+  .logo small {
+    font-size: 11px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .login-button {
+    padding: 9px 13px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+
+  .menu-toggle {
+    font-size: 25px;
+    padding: 3px;
   }
 
   .hero {
@@ -462,6 +538,9 @@ a {
     font-size: 35px;
   }
 }
+
+/* 급식 카드 레이아웃 */
+
 #school .school-life-card-grid > .meal-card {
   grid-column: auto !important;
   min-width: 0;
