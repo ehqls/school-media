@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="영주고등학교 YBS 학생 커뮤니티">
+  <title>YBS 커뮤니티</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/community.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">
+      <span class="logo-icon">Y</span>
+      <span>
+        <strong>영주고등학교</strong>
+        <small>YBS 방송부</small>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="index.html">홈페이지</a>
+      <a href="community.html">커뮤니티</a>
+      <a href="board.html">익명 게시판</a>
+    </nav>
+  </header>
+
+  <main class="community-container">
+
+    <section class="community-hero">
+      <span class="community-eyebrow">YBS STUDENT COMMUNITY</span>
+      <h1>학생 커뮤니티</h1>
+      <p>관리자 승인을 받은 게시글을 확인할 수 있는 공간입니다.</p>
+      <div id="communityStatus" class="community-status">
+        회원 정보를 확인하고 있습니다.
+      </div>
+    </section>
+
+    <section class="community-panel" id="posts">
+      <div class="community-heading">
+        <div>
+          <span class="community-label">PUBLIC POSTS</span>
+          <h2>공개 게시글</h2>
+          <p>관리자 검토를 통과한 게시글입니다.</p>
+        </div>
+
+        <button id="refreshPosts" type="button" class="secondary-button">
+          새로고침
+        </button>
+      </div>
+
+      <div id="publicPosts" class="post-list">
+        게시글을 불러오는 중입니다.
+      </div>
+    </section>
+
+    <section class="community-panel">
+      <div class="community-heading">
+        <div>
+          <span class="community-label">ANONYMOUS BOARD</span>
+          <h2>익명 게시판</h2>
+          <p>새로운 이야기를 작성하고 관리자 검토를 요청하세요.</p>
+        </div>
+      </div>
+
+      <a href="board.html#write" class="primary-button">
+        익명 게시판으로 이동 →
+      </a>
+    </section>
+
+    <footer class="community-footer">
+      <a href="index.html">YBS 홈페이지로 돌아가기</a>
+      <p>YEONGJU HIGH SCHOOL · YBS</p>
+    </footer>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/community.js" defer></script>
+</body>
+</html>
