@@ -20,7 +20,11 @@
       align-items: center;
       padding: 20px;
     }
-    .auth-overlay.active { display: flex; }
+
+    .auth-overlay.active {
+      display: flex;
+    }
+
     .auth-box {
       background: white;
       color: #17243b;
@@ -32,167 +36,150 @@
       max-height: 90vh;
       overflow-y: auto;
     }
-    .auth-box h2 { margin-top: 0; margin-bottom: 8px; }
-    .auth-description { color: #64748b; font-size: 14px; margin-bottom: 22px; }
-    .auth-tabs { display: flex; gap: 8px; margin-bottom: 22px; }
-    .auth-tabs button, .auth-submit {
-      border: none; border-radius: 9px; padding: 12px;
-      cursor: pointer; font-weight: bold;
+
+    .auth-box h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
     }
-    .auth-tabs button { flex: 1; background: #edf2f8; color: #334155; }
-    .auth-tabs button.active { background: #2563eb; color: white; }
-    .auth-form { display: none; }
-    .auth-form.active { display: block; }
-    .auth-form label {
-      display: block; font-size: 14px; font-weight: 600; margin: 13px 0 6px;
+
+    .auth-description {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 22px;
     }
-    .auth-form input, .auth-form select {
-      box-sizing: border-box; width: 100%; padding: 12px;
-      border: 1px solid #d6deea; border-radius: 9px;
-      background: white; color: #17243b; font-size: 15px;
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
     }
+
+    .auth-tabs button,
     .auth-submit {
-      width: 100%; margin-top: 20px;
-      background: #2563eb; color: white; font-size: 15px;
+      border: none;
+      border-radius: 9px;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: bold;
     }
-    .auth-submit:disabled { opacity: .6; cursor: wait; }
+
+    .auth-tabs button {
+      flex: 1;
+      background: #edf2f8;
+      color: #334155;
+    }
+
+    .auth-tabs button.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    .auth-form label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 13px 0 6px;
+    }
+
+    .auth-form input,
+    .auth-form select {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d6deea;
+      border-radius: 9px;
+      background: white;
+      color: #17243b;
+      font-size: 15px;
+    }
+
+    .auth-submit {
+      width: 100%;
+      margin-top: 20px;
+      background: #2563eb;
+      color: white;
+      font-size: 15px;
+    }
+
+    .auth-submit:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
     .auth-close {
-      position: absolute; top: 15px; right: 18px;
-      border: none; background: transparent; font-size: 25px;
-      cursor: pointer; color: #475569;
+      position: absolute;
+      top: 15px;
+      right: 18px;
+      border: none;
+      background: transparent;
+      font-size: 25px;
+      cursor: pointer;
+      color: #475569;
     }
+
     .auth-message {
-      display: none; margin-top: 15px; padding: 12px;
-      border-radius: 9px; font-size: 14px; line-height: 1.6;
-      background: #eff6ff; color: #1d4ed8; overflow-wrap: anywhere;
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 14px;
+      line-height: 1.6;
+      background: #eff6ff;
+      color: #1d4ed8;
+      overflow-wrap: anywhere;
     }
-    .auth-message.active { display: block; }
-    .auth-message.error { background: #fef2f2; color: #b91c1c; }
-    .auth-message.success { background: #f0fdf4; color: #15803d; }
+
+    .auth-message.active {
+      display: block;
+    }
+
+    .auth-message.error {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .auth-message.success {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
     .auth-account {
-      display: none; margin-top: 15px; padding: 15px;
-      border-radius: 10px; background: #f1f5f9;
-      font-size: 14px; line-height: 1.8;
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      font-size: 14px;
+      line-height: 1.8;
     }
-    .auth-account.active { display: block; }
+
+    .auth-account.active {
+      display: block;
+    }
+
     .auth-account button {
-      margin-top: 10px; padding: 9px 15px; border: none;
-      border-radius: 8px; background: #dc2626; color: white; cursor: pointer;
-    }
-    .auth-notice { font-size: 12px; color: #64748b; line-height: 1.6; margin-top: 15px; }
-
-    #adminPageLink[hidden] { display: none !important; }
-    #adminPageLink { font-weight: 800; }
-
-    .meal-card { grid-column: 1 / -1; }
-    .meal-controls {
-      display: flex; flex-wrap: wrap; align-items: center;
-      gap: 9px; margin-top: 20px;
-    }
-    .meal-controls input {
-      min-width: 150px; padding: 10px 12px;
-      border: 1px solid rgba(100, 116, 139, .3);
-      border-radius: 9px; font: inherit; color: inherit;
-    }
-    .meal-controls button {
-      padding: 10px 14px; border: 1px solid rgba(100, 116, 139, .25);
-      border-radius: 9px; background: rgba(255, 255, 255, .75);
-      color: inherit; font: inherit; cursor: pointer;
-    }
-    .meal-controls button:hover { background: rgba(37, 99, 235, .1); }
-    .meal-controls button:disabled { opacity: .5; cursor: wait; }
-    .meal-status { margin: 18px 0 12px; font-size: 14px; color: #64748b; }
-    .meal-list {
-      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px; margin-top: 14px;
-    }
-    .meal-item {
-      padding: 18px; border: 1px solid rgba(100, 116, 139, .2);
-      border-radius: 14px; background: rgba(255, 255, 255, .55);
-    }
-    .meal-item h4 { margin: 0 0 13px; font-size: 17px; }
-    .meal-menu p { margin: 7px 0; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
-    .meal-calories {
-      margin-top: 15px; padding-top: 12px;
-      border-top: 1px solid rgba(100, 116, 139, .2);
-      font-size: 12px; color: #64748b;
+      margin-top: 10px;
+      padding: 9px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #dc2626;
+      color: white;
+      cursor: pointer;
     }
 
-    .settings-section {
-      display: none; position: fixed; inset: 0; z-index: 9000;
-      background: rgba(10, 20, 40, .65); backdrop-filter: blur(8px);
-      padding: 20px; overflow-y: auto; align-items: center;
-      justify-content: center; scroll-margin-top: 0;
-    }
-    .settings-section.settings-open { display: flex; }
-    .settings-popup {
-      width: 100%; max-width: 850px; max-height: 90vh;
-      overflow-y: auto; padding: 28px; border-radius: 20px;
-      background: white; color: #17243b; position: relative;
-    }
-    .settings-close {
-      position: absolute; top: 15px; right: 20px;
-      border: none; background: transparent; color: #475569;
-      font-size: 28px; cursor: pointer; z-index: 2;
-    }
-    .settings-section .section-heading { padding-right: 35px; }
-    .settings-grid {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;
-    }
-    .settings-card {
-      padding: 24px; border: 1px solid rgba(100, 116, 139, .2);
-      border-radius: 16px; background: rgba(255, 255, 255, .65);
-    }
-    .settings-card h3 { margin: 0 0 10px; }
-    .settings-description {
-      color: #64748b; font-size: 14px; line-height: 1.7; margin-bottom: 20px;
-    }
-    .settings-login-notice {
-      padding: 16px; border-radius: 10px;
-      background: rgba(37, 99, 235, .08); color: #1d4ed8;
-      font-size: 14px; line-height: 1.7;
-    }
-    .settings-form label {
-      display: block; margin: 14px 0 6px; font-size: 14px; font-weight: 600;
-    }
-    .settings-form input {
-      box-sizing: border-box; width: 100%; padding: 12px;
-      border: 1px solid #d6deea; border-radius: 9px;
-      background: white; color: #17243b; font-size: 15px;
-    }
-    .settings-form button {
-      width: 100%; margin-top: 18px; padding: 12px;
-      border: none; border-radius: 9px; background: #2563eb;
-      color: white; font-size: 14px; font-weight: 700; cursor: pointer;
-    }
-    .settings-form button:disabled { opacity: .6; cursor: wait; }
-    .settings-message {
-      display: none; margin-top: 14px; padding: 12px;
-      border-radius: 9px; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere;
-    }
-    .settings-message.active { display: block; }
-    .settings-message.error { background: #fef2f2; color: #b91c1c; }
-    .settings-message.success { background: #f0fdf4; color: #15803d; }
-    .danger-zone { border-color: rgba(220, 38, 38, .3); }
-    .danger-zone h3 { color: #b91c1c; }
-    .danger-warning {
-      padding: 14px; border-radius: 9px; background: #fef2f2;
-      color: #991b1b; font-size: 13px; line-height: 1.7; margin-bottom: 18px;
-    }
-    .delete-account-button {
-      width: 100%; padding: 12px; border: none; border-radius: 9px;
-      background: #dc2626 !important; color: white; font-weight: 700; cursor: pointer;
-    }
-    .delete-account-button:disabled { opacity: .6; cursor: wait; }
-    .settings-disabled { opacity: .55; pointer-events: none; }
-
-    @media (max-width: 700px) {
-      .meal-list { grid-template-columns: 1fr; }
-      .settings-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 600px) {
-      .settings-section { padding: 10px; }
-      .settings-popup { padding: 20px; }
+    .auth-notice {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -207,14 +194,6 @@
       </span>
     </a>
 
-    <div class="header-actions">
-      <a href="#" class="login-button" id="loginButton">로그인</a>
-      <button class="menu-toggle" id="menuToggle"
-        aria-label="메뉴 열기" aria-expanded="false">
-        ☰
-      </button>
-    </div>
-
     <nav class="nav" id="navigation">
       <a href="#home">홈</a>
       <a href="#school">학교생활</a>
@@ -222,12 +201,16 @@
       <a href="#clubs">동아리</a>
       <a href="community.html">커뮤니티</a>
       <a href="board.html">익명 게시판</a>
-      <a href="#settings" id="settingsLink">설정</a>
-
-      <a href="admin.html" id="adminPageLink" hidden>
-        관리자 페이지
-      </a>
+      <a href="#settings">설정</a>
     </nav>
+
+    <div class="header-actions">
+      <a href="#" class="login-button" id="loginButton">로그인</a>
+      <button class="menu-toggle" id="menuToggle"
+        aria-label="메뉴 열기" aria-expanded="false">
+        ☰
+      </button>
+    </div>
   </header>
 
   <main>
@@ -254,22 +237,11 @@
       </div>
 
       <div class="card-grid three-columns">
-        <article class="info-card meal-card">
+        <article class="info-card">
           <span class="card-icon">🍽️</span>
           <h3>오늘의 급식</h3>
-          <p>날짜를 선택하여 학교 급식 정보를 확인하세요.</p>
-
-          <div class="meal-controls">
-            <button type="button" id="mealPrev">이전 날짜</button>
-            <input type="date" id="mealDate" aria-label="급식 조회 날짜">
-            <button type="button" id="mealNext">다음 날짜</button>
-            <button type="button" id="mealRefresh">조회</button>
-          </div>
-
-          <p class="meal-status" id="mealStatus" aria-live="polite">
-            급식 정보를 불러오는 중입니다.
-          </p>
-          <div class="meal-list" id="mealList"></div>
+          <p>날짜별 학교 급식 정보를 확인할 수 있습니다.</p>
+          <span class="coming-soon">서비스 준비 중</span>
         </article>
 
         <article class="info-card">
@@ -336,6 +308,7 @@
       </div>
     </section>
 
+    <!-- 커뮤니티 -->
     <section class="section" id="community">
       <div class="section-heading">
         <div>
@@ -346,19 +319,39 @@
       </div>
 
       <div class="card-grid two-columns">
+
         <article class="info-card">
           <span class="card-icon">💬</span>
           <h3>커뮤니티</h3>
           <p>관리자가 승인한 게시글을 확인할 수 있습니다.</p>
-          <a href="community.html#posts" class="primary-button">커뮤니티 열기 →</a>
+          <a href="community.html#posts" class="primary-button">
+            커뮤니티 열기 →
+          </a>
         </article>
 
         <article class="info-card">
           <span class="card-icon">🔒</span>
           <h3>익명 게시판</h3>
           <p>익명으로 글을 작성하고 관리자 검토를 요청하세요.</p>
-          <a href="board.html#write" class="primary-button">글 작성하기 →</a>
+          <a href="board.html#write" class="primary-button">
+            글 작성하기 →
+          </a>
         </article>
+
+      </div>
+    </section>
+
+    <section class="section settings-section" id="settings">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">SETTINGS</span>
+          <h2>설정</h2>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>서비스 설정</h3>
+        <p>계정 및 개인 설정 기능은 회원 시스템 구현 단계에서 추가합니다.</p>
       </div>
     </section>
   </main>
@@ -369,72 +362,7 @@
     <small>본 홈페이지는 학생 제작 프로젝트입니다.</small>
   </footer>
 
-  <section class="settings-section" id="settings" aria-hidden="true">
-    <div class="settings-popup">
-      <button type="button" class="settings-close" id="settingsClose" aria-label="설정 닫기">×</button>
-
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">SETTINGS</span>
-          <h2>설정</h2>
-        </div>
-        <p>계정과 개인정보를 관리할 수 있습니다.</p>
-      </div>
-
-      <div id="settingsLoginNotice" class="settings-login-notice">
-        설정 기능을 이용하려면 먼저 로그인해 주세요.
-      </div>
-
-      <div id="settingsContent" class="settings-grid settings-disabled">
-        <article class="settings-card">
-          <h3>계정 정보</h3>
-          <p class="settings-description">현재 로그인한 계정의 정보를 확인할 수 있습니다.</p>
-          <div id="settingsAccountDetails">로그인 후 계정 정보가 표시됩니다.</div>
-        </article>
-
-        <article class="settings-card">
-          <h3>비밀번호 변경</h3>
-          <p class="settings-description">계정의 비밀번호를 변경합니다.</p>
-
-          <form id="changePasswordForm" class="settings-form">
-            <label for="currentPassword">현재 비밀번호</label>
-            <input type="password" id="currentPassword" autocomplete="current-password" required placeholder="현재 비밀번호">
-
-            <label for="newPassword">새 비밀번호</label>
-            <input type="password" id="newPassword" minlength="8" autocomplete="new-password" required placeholder="새 비밀번호 8자 이상">
-
-            <label for="confirmNewPassword">새 비밀번호 확인</label>
-            <input type="password" id="confirmNewPassword" minlength="8" autocomplete="new-password" required placeholder="새 비밀번호 다시 입력">
-
-            <button type="submit" id="changePasswordButton">비밀번호 변경</button>
-          </form>
-
-          <div id="passwordMessage" class="settings-message" role="status" aria-live="polite"></div>
-        </article>
-
-        <article class="settings-card danger-zone">
-          <h3>계정 탈퇴</h3>
-          <p class="settings-description">YBS 홈페이지 계정을 영구적으로 삭제합니다.</p>
-
-          <div class="danger-warning">
-            <strong>주의사항</strong><br>
-            계정 탈퇴 후에는 로그인이 불가능하며 계정 정보를 복구할 수 없습니다.
-            기존 커뮤니티 게시글과 댓글은 유지되지만 작성자 정보는 탈퇴한 회원으로 표시됩니다.
-          </div>
-
-          <form id="deleteAccountForm" class="settings-form">
-            <label for="deleteAccountPassword">현재 비밀번호 확인</label>
-            <input type="password" id="deleteAccountPassword" autocomplete="current-password" required placeholder="현재 비밀번호">
-
-            <button type="submit" id="deleteAccountButton" class="delete-account-button">계정 탈퇴</button>
-          </form>
-
-          <div id="deleteAccountMessage" class="settings-message" role="status" aria-live="polite"></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
+  <!-- 회원가입 및 로그인 창 -->
   <div class="auth-overlay" id="authOverlay">
     <div class="auth-box">
       <button class="auth-close" id="authClose" aria-label="닫기">×</button>
@@ -449,23 +377,28 @@
 
       <form class="auth-form active" id="loginForm">
         <label for="loginEmail">이메일</label>
-        <input id="loginEmail" type="email" required autocomplete="email" placeholder="이메일 주소">
+        <input id="loginEmail" type="email" required autocomplete="email"
+          placeholder="이메일 주소">
 
         <label for="loginPassword">비밀번호</label>
-        <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="비밀번호">
+        <input id="loginPassword" type="password" required
+          autocomplete="current-password" placeholder="비밀번호">
 
         <button class="auth-submit" type="submit">로그인</button>
       </form>
 
       <form class="auth-form" id="signupForm">
         <label for="signupName">이름</label>
-        <input id="signupName" type="text" maxlength="30" required autocomplete="name" placeholder="이름">
+        <input id="signupName" type="text" maxlength="30" required
+          autocomplete="name" placeholder="이름">
 
         <label for="signupEmail">이메일</label>
-        <input id="signupEmail" type="email" required autocomplete="email" placeholder="사용할 이메일 주소">
+        <input id="signupEmail" type="email" required
+          autocomplete="email" placeholder="사용할 이메일 주소">
 
         <label for="signupPassword">비밀번호</label>
-        <input id="signupPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8자 이상">
+        <input id="signupPassword" type="password" minlength="8"
+          required autocomplete="new-password" placeholder="8자 이상">
 
         <label for="signupGrade">학년</label>
         <select id="signupGrade" required>
@@ -476,15 +409,18 @@
         </select>
 
         <label for="signupClass">반</label>
-        <input id="signupClass" type="number" min="1" max="99" required placeholder="반">
+        <input id="signupClass" type="number" min="1" max="99"
+          required placeholder="반">
 
         <label for="signupNumber">번호</label>
-        <input id="signupNumber" type="number" min="1" max="999" required placeholder="번호">
+        <input id="signupNumber" type="number" min="1" max="999"
+          required placeholder="번호">
 
         <button class="auth-submit" type="submit">회원가입</button>
       </form>
 
-      <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
+      <div class="auth-message" id="authMessage" role="status"
+        aria-live="polite"></div>
 
       <div class="auth-account" id="authAccount">
         <strong>계정 정보</strong>
@@ -503,45 +439,5 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <script src="js/script.js" defer></script>
-  <script src="js/meal.js" defer></script>
-  <script src="js/schedule.js" defer></script>
-  <script src="js/school-life.js" defer></script>
-  <script src="js/timetable.js" defer></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const settings = document.getElementById("settings");
-      const settingsLink = document.getElementById("settingsLink");
-      const settingsClose = document.getElementById("settingsClose");
-
-      if (!settings || !settingsLink || !settingsClose) return;
-
-      function openSettings(event) {
-        if (event) event.preventDefault();
-        settings.classList.add("settings-open");
-        settings.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
-      }
-
-      function closeSettings() {
-        settings.classList.remove("settings-open");
-        settings.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
-      }
-
-      settingsLink.addEventListener("click", openSettings);
-      settingsClose.addEventListener("click", closeSettings);
-
-      settings.addEventListener("click", (event) => {
-        if (event.target === settings) closeSettings();
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && settings.classList.contains("settings-open")) {
-          closeSettings();
-        }
-      });
-    });
-  </script>
 </body>
 </html>
