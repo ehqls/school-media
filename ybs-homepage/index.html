@@ -186,6 +186,29 @@
     .delete-account-button:disabled { opacity: .6; cursor: wait; }
     .settings-disabled { opacity: .55; pointer-events: none; }
 
+    .signup-field-note { min-height: 18px; margin: 6px 0 0; font-size: 12px; color: #64748b; }
+    .signup-field-note.match { color: #15803d; }
+    .signup-field-note.mismatch { color: #b91c1c; }
+    .signup-privacy {
+      margin-top: 18px; padding: 15px; border: 1px solid #d6deea;
+      border-radius: 10px; background: #f8fafc; color: #334155;
+      font-size: 12px; line-height: 1.65;
+    }
+    .signup-privacy h3 { margin: 0 0 7px; font-size: 14px; color: #17243b; }
+    .signup-privacy p { margin: 0 0 7px; }
+    .signup-privacy ul { margin: 0; padding-left: 18px; }
+    .privacy-consent-label {
+      display: flex !important; align-items: flex-start; gap: 8px;
+      margin-top: 12px !important; font-weight: 600 !important;
+    }
+    .privacy-consent-label input { width: 17px; height: 17px; flex: 0 0 auto; margin: 2px 0 0; }
+    .auth-resend-button {
+      display: block; width: 100%; margin-top: 10px; padding: 11px;
+      border: 1px solid #2563eb; border-radius: 9px; background: white;
+      color: #1d4ed8; font-weight: 700; cursor: pointer;
+    }
+    .auth-resend-button[hidden] { display: none !important; }
+
     @media (max-width: 700px) {
       .meal-list { grid-template-columns: 1fr; }
       .settings-grid { grid-template-columns: 1fr; }
@@ -467,6 +490,10 @@
         <label for="signupPassword">비밀번호</label>
         <input id="signupPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="8자 이상">
 
+        <label for="signupPasswordConfirm">비밀번호 확인</label>
+        <input id="signupPasswordConfirm" type="password" minlength="8" required autocomplete="new-password" placeholder="비밀번호를 다시 입력">
+        <p id="signupPasswordMessage" class="signup-field-note" role="status" aria-live="polite"></p>
+
         <label for="signupGrade">학년</label>
         <select id="signupGrade" required>
           <option value="">학년 선택</option>
@@ -481,9 +508,24 @@
         <label for="signupNumber">번호</label>
         <input id="signupNumber" type="number" min="1" max="999" required placeholder="번호">
 
+        <section class="signup-privacy">
+          <h3>개인정보 수집 및 이용 동의</h3>
+          <p>회원가입과 학교 구성원 확인을 위해 아래 개인정보를 수집·이용합니다.</p>
+          <ul>
+            <li><strong>수집 항목:</strong> 이름, 이메일 주소, 학년, 반, 번호</li>
+            <li><strong>이용 목적:</strong> 계정 생성·관리, 이메일 인증, 학교 구성원 확인 및 관리자 승인, 홈페이지 회원 기능 제공</li>
+            <li><strong>보유 기간:</strong> 회원 탈퇴 시까지. 단, 관계 법령에 따라 보관이 필요한 정보는 해당 기간 동안 보관할 수 있습니다.</li>
+          </ul>
+          <label class="privacy-consent-label" for="signupPrivacyConsent">
+            <input id="signupPrivacyConsent" type="checkbox" required>
+            <span>개인정보 수집 및 이용에 동의합니다. (필수)</span>
+          </label>
+        </section>
+
         <button class="auth-submit" type="submit">회원가입</button>
       </form>
 
+      <button type="button" id="resendVerificationButton" class="auth-resend-button" hidden>인증 이메일 다시 보내기</button>
       <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
 
       <div class="auth-account" id="authAccount">
