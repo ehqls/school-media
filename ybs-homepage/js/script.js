@@ -16,6 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
+  const signupPassword = document.getElementById("signupPassword");
+  const signupPasswordConfirm = document.getElementById("signupPasswordConfirm");
+  const signupPasswordMessage = document.getElementById("signupPasswordMessage");
+  const signupPrivacyConsent = document.getElementById("signupPrivacyConsent");
+  const resendVerificationButton = document.getElementById("resendVerificationButton");
 
   const authMessage = document.getElementById("authMessage");
   const authAccount = document.getElementById("authAccount");
@@ -54,6 +59,34 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentUser = null;
   let currentProfile = null;
 
+  /* 모바일 로그인 버튼 표시 제어 */
+
+  function updateMobileLoginButton() {
+    const isMobile = window.matchMedia("(max-width: 900px)").matches;
+    const isMenuOpen = navigation.classList.contains("active");
+
+    if (isMobile) {
+      if (isMenuOpen) {
+        loginButton.style.setProperty("display", "inline-flex", "important");
+        loginButton.style.setProperty("visibility", "visible", "important");
+        loginButton.style.setProperty("opacity", "1", "important");
+        loginButton.style.setProperty("position", "relative", "important");
+        loginButton.style.setProperty("align-self", "flex-start", "important");
+        loginButton.style.setProperty("width", "fit-content", "important");
+        loginButton.style.setProperty("margin", "12px 5px", "important");
+        loginButton.style.setProperty("padding", "11px 19px", "important");
+        loginButton.style.setProperty("background", "var(--primary)", "important");
+        loginButton.style.setProperty("color", "#ffffff", "important");
+        loginButton.style.setProperty("border-radius", "12px", "important");
+        loginButton.style.setProperty("z-index", "20", "important");
+      } else {
+        loginButton.style.setProperty("display", "none", "important");
+      }
+    } else {
+      loginButton.removeAttribute("style");
+    }
+  }
+
   /* 공통 메시지 */
 
   function showMessage(message, type = "info") {
@@ -86,6 +119,61 @@ document.addEventListener("DOMContentLoaded", () => {
     element.className = "settings-message";
   }
 
+  function updateSignupPasswordMatch() {
+    if (!signupPassword || !signupPasswordConfirm || !signupPasswordMessage) return true;
+
+    const password = signupPassword.value;
+    const confirmation = signupPasswordConfirm.value;
+
+    signupPasswordMessage.className = "signup-field-note";
+    signupPasswordMessage.textContent = "";
+
+    if (!confirmation) return false;
+
+    if (password === confirmation) {
+      signupPasswordMessage.textContent = "비밀번호가 일치합니다.";
+      signupPasswordMessage.classList.add("match");
+      return true;
+    }
+
+    signupPasswordMessage.textContent = "비밀번호가 일치하지 않습니다.";
+    signupPasswordMessage.classList.add("mismatch");
+    return false;
+  }
+
+  if (signupPassword && signupPasswordConfirm) {
+    signupPassword.addEventListener("input", updateSignupPasswordMatch);
+    signupPasswordConfirm.addEventListener("input", updateSignupPasswordMatch);
+  }
+
+  if (resendVerificationButton) {
+    resendVerificationButton.addEventListener("click", async () => {
+      const email = document.getElementById("signupEmail")?.value.trim();
+
+      if (!ybsClient || !email) {
+        showMessage("인증 이메일을 다시 받을 이메일 주소를 입력해 주세요.", "error");
+        return;
+      }
+
+      resendVerificationButton.disabled = true;
+
+      try {
+        const { error } = await ybsClient.auth.resend({
+          type: "signup",
+          email
+        });
+
+        if (error) throw error;
+        showMessage("인증 이메일을 다시 보냈습니다. 받은편지함과 스팸메일함을 확인해 주세요.", "success");
+      } catch (error) {
+        console.error("인증 이메일 재전송 오류:", error);
+        showMessage(error.message || "인증 이메일 재전송에 실패했습니다.", "error");
+      } finally {
+        resendVerificationButton.disabled = false;
+      }
+    });
+  }
+
   /* 로그인 팝업 */
 
   function openAuth() {
@@ -100,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isLogin = mode === "login";
 
     clearMessage();
+    if (resendVerificationButton && isLogin) resendVerificationButton.hidden = true;
 
     loginTab.classList.toggle("active", isLogin);
     signupTab.classList.toggle("active", !isLogin);
@@ -205,14 +294,21 @@ document.addEventListener("DOMContentLoaded", () => {
       "aria-expanded",
       String(navigation.classList.contains("active"))
     );
+
+    updateMobileLoginButton();
   });
 
   navigation.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
       navigation.classList.remove("active");
       menuToggle.setAttribute("aria-expanded", "false");
+      updateMobileLoginButton();
     });
   });
+
+  window.addEventListener("resize", updateMobileLoginButton);
+
+  updateMobileLoginButton();
 
   /* 로그인 팝업 열기 */
 
@@ -252,7 +348,9 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const name = document.getElementById("signupName").value.trim();
       const email = document.getElementById("signupEmail").value.trim();
-      const password = document.getElementById("signupPassword").value;
+      const password = signupPassword.value;
+      const passwordConfirmation = signupPasswordConfirm.value;
+      const privacyConsentGiven = signupPrivacyConsent.checked;
 
       const grade = Number(document.getElementById("signupGrade").value);
       const classNumber = Number(document.getElementById("signupClass").value);
@@ -260,13 +358,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         !name || !email || password.length < 8 ||
+        password !== passwordConfirmation ||
+        !privacyConsentGiven ||
         ![1, 2, 3].includes(grade) ||
         !Number.isInteger(classNumber) || classNumber < 1 ||
         !Number.isInteger(studentNumber) || studentNumber < 1
       ) {
+        if (password !== passwordConfirmation) {
+          throw new Error("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+        }
+        if (!privacyConsentGiven) {
+          throw new Error("개인정보 수집 및 이용에 동의해야 회원가입할 수 있습니다.");
+        }
         throw new Error("입력 정보를 다시 확인해 주세요.");
       }
 
+      const consentTimestamp = new Date().toISOString();
       const { data, error } = await ybsClient.auth.signUp({
         email,
         password,
@@ -275,7 +382,10 @@ document.addEventListener("DOMContentLoaded", () => {
             name,
             grade: String(grade),
             class_number: String(classNumber),
-            student_number: String(studentNumber)
+            student_number: String(studentNumber),
+            privacy_consent: true,
+            privacy_consent_at: consentTimestamp,
+            privacy_policy_version: "2026-11-25"
           }
         }
       });
@@ -286,10 +396,18 @@ document.addEventListener("DOMContentLoaded", () => {
         await ybsClient.auth.signOut();
       }
 
-      signupForm.reset();
+      signupPassword.value = "";
+      signupPasswordConfirm.value = "";
+      updateSignupPasswordMatch();
+
+      if (resendVerificationButton) {
+        resendVerificationButton.hidden = false;
+      }
 
       showMessage(
-        "가입 요청이 접수되었습니다. 이메일 인증과 관리자 승인을 기다려 주세요.",
+        data.session
+          ? "가입이 완료되었습니다. 계정 상태와 이메일 인증 여부를 확인해 주세요."
+          : "인증 이메일을 보냈습니다. 이메일의 인증 링크를 눌러 가입을 완료해 주세요. 인증 메일이 보이지 않으면 스팸메일함을 확인하거나 아래 버튼으로 다시 받을 수 있습니다.",
         "success"
       );
 
@@ -578,6 +696,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!data.session) {
         showLoggedOut();
+
+        const params = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        const verificationError = params.get("error_description") || hashParams.get("error_description");
+
+        if (verificationError) {
+          showMessage(
+            `이메일 인증을 완료하지 못했습니다: ${verificationError}. 인증 링크가 만료되었다면 회원가입 화면에서 인증 이메일을 다시 요청해 주세요.`,
+            "error"
+          );
+        }
+        return;
+      }
+
+      if (!data.session.user.email_confirmed_at) {
+        await ybsClient.auth.signOut();
+        showLoggedOut();
+        showMessage("이메일 인증이 아직 확인되지 않았습니다. 받은 이메일의 인증 링크를 눌러 주세요.", "error");
         return;
       }
 
@@ -597,10 +733,12 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         await ybsClient.auth.signOut();
         showLoggedOut();
+        showMessage("이메일 인증이 확인되었습니다. 현재 관리자 승인 대기 중이거나 회원 정보를 확인할 수 없습니다.", "success");
         return;
       }
 
       showLoggedIn(profile, data.session.user);
+      showMessage("이메일 인증이 확인되었고 로그인되었습니다.", "success");
 
     } catch (error) {
       console.error("세션 확인 오류:", error);
