@@ -105,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
     button.type = "button";
     button.textContent = text;
     button.className = className;
-
     button.addEventListener("click", onClick);
 
     return button;
@@ -127,9 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `${member.student_number}번`
       ].join(" ").toLowerCase();
 
-      const matchesSearch = searchableText.includes(keyword);
-
-      return matchesStatus && matchesSearch;
+      return matchesStatus && searchableText.includes(keyword);
     });
 
     memberList.replaceChildren();
@@ -166,45 +163,50 @@ document.addEventListener("DOMContentLoaded", () => {
       const actions = document.createElement("div");
       actions.className = "member-actions";
 
-      // 본인 계정이 아닌 경우에만 정보 수정 및 권한 변경 허용
       if (member.id !== currentAdminId) {
-        const editButton = createActionButton(
-          "정보 수정",
-          "edit-button",
-          () => editMember(member)
+        actions.appendChild(
+          createActionButton(
+            "정보 수정",
+            "edit-button",
+            () => editMember(member)
+          )
         );
 
-        actions.appendChild(editButton);
-
-        const roleButton = createActionButton(
-          member.role === "admin"
-            ? "일반 회원으로 변경"
-            : "관리자로 변경",
-          "role-button",
-          () => changeMemberRole(member)
+        actions.appendChild(
+          createActionButton(
+            member.role === "admin"
+              ? "일반 회원으로 변경"
+              : "관리자로 변경",
+            "role-button",
+            () => changeMemberRole(member)
+          )
         );
 
-        actions.appendChild(roleButton);
+        actions.appendChild(
+          createActionButton(
+            "회원 삭제",
+            "delete-button",
+            () => deleteMember(member)
+          )
+        );
       }
 
-      // 승인 대기 중인 일반 회원에게만 승인 및 거절 표시
       if (
         member.role !== "admin" &&
         member.approval_status === "pending"
       ) {
-        const approveButton = createActionButton(
-          "승인",
-          "approve-button",
-          () => updateMemberStatus(member.id, "approved")
+        actions.append(
+          createActionButton(
+            "승인",
+            "approve-button",
+            () => updateMemberStatus(member.id, "approved")
+          ),
+          createActionButton(
+            "거절",
+            "reject-button",
+            () => updateMemberStatus(member.id, "rejected")
+          )
         );
-
-        const rejectButton = createActionButton(
-          "거절",
-          "reject-button",
-          () => updateMemberStatus(member.id, "rejected")
-        );
-
-        actions.append(approveButton, rejectButton);
       }
 
       item.appendChild(actions);
@@ -214,19 +216,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function editMember(member) {
     const name = prompt("회원 이름을 입력하세요.", member.name);
-
     if (name === null) return;
 
     const grade = prompt("학년을 입력하세요. (1~3)", member.grade);
-
     if (grade === null) return;
 
     const classNumber = prompt("반을 입력하세요.", member.class_number);
-
     if (classNumber === null) return;
 
     const studentNumber = prompt("번호를 입력하세요.", member.student_number);
-
     if (studentNumber === null) return;
 
     const cleanName = name.trim();
@@ -272,14 +270,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function changeMemberRole(member) {
     const newRole = member.role === "admin" ? "member" : "admin";
+    const roleLabel = newRole === "admin" ? "관리자" : "일반 회원";
 
-    const roleLabel =
-      newRole === "admin" ? "관리자" : "일반 회원";
-
-    const message =
-      `${member.name} 회원의 권한을 ${roleLabel}(으)로 변경하시겠습니까?`;
-
-    if (!confirm(message)) return;
+    if (
+      !confirm(
+        `${member.name} 회원의 권한을 ${roleLabel}(으)로 변경하시겠습니까?`
+      )
+    ) {
+      return;
+    }
 
     const { error } = await ybsClient.rpc("set_member_role", {
       p_member_id: member.id,
@@ -316,6 +315,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
     alert(`${action}이 완료되었습니다.`);
     await loadMembers();
+  }
+
+  async function deleteMember(member) {
+    if (member.id === currentAdminId) {
+      alert("현재 로그인한 관리자 계정은 삭제할 수 없습니다.");
+      return;
+    }
+
+    const memberLabel =
+      `${member.name} (${member.grade}학년 ` +
+      `${member.class_number}반 ${member.student_number}번)`;
+
+    const firstConfirm = confirm(
+      `${memberLabel} 회원을 삭제하시겠습니까?\n\n` +
+      "삭제하면 해당 회원은 로그인할 수 없게 됩니다.\n" +
+      "작성한 게시글과 댓글은 유지되며 작성자 정보는 익명화됩니다."
+    );
+
+    if (!firstConfirm) return;
+
+    const secondConfirm = prompt(
+      `정말 삭제하려면 회원 이름 "${member.name}"을 입력하세요.`
+    );
+
+    if (secondConfirm !== member.name) {
+      alert("회원 이름이 일치하지 않아 삭제를 취소했습니다.");
+      return;
+    }
+
+    try {
+      const { data, error } = await ybsClient.functions.invoke(
+        "delete-member",
+        {
+          body: {
+            memberId: member.id
+          }
+        }
+      );
+
+      if (error) {
+        console.error("회원 삭제 요청 오류:", error);
+        throw new Error(error.message || "회원 삭제 요청에 실패했습니다.");
+      }
+
+      if (!data || data.success !== true) {
+        throw new Error(data?.error || "회원 삭제에 실패했습니다.");
+      }
+
+      alert(`${member.name} 회원이 삭제되었습니다.`);
+      await loadMembers();
+
+    } catch (error) {
+      console.error("회원 삭제 오류:", error);
+      alert(
+        `회원 삭제에 실패했습니다.\n${error.message}\n\n` +
+        "Edge Function 배포 및 관리자 권한 설정을 확인해 주세요."
+      );
+    }
   }
 
   memberSearch.addEventListener("input", renderMembers);
